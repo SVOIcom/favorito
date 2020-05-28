@@ -1,0 +1,18 @@
+{
+  "name": "favorito",
+  "version": "1.0.0",
+  "description": "Lightweight CakePHP-styled Node.js web framework",
+  "main": "index.js",
+  "author": "Andrey Nedobylsky",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "nodemailer": "^4.7.0",
+    "request": "^2.88.2",
+    "request-promise-native": "^1.0.8",
+    "sqlite3": "^4.1.1",
+    "twig": "^1.15.0"
+  }
+}
