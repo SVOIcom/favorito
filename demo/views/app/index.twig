@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{ title }}</title>
+    {% include '@core/helloworld.twig' %}
+  </head>
+  <body class="c-app flex-row align-items-center">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="clearfix">
+            <h1 class="float-left display-3 mr-4">Index page</h1>
+            <h4 class="pt-3">Я что-то нажала и всё пропало!</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- CoreUI and necessary plugins-->
+    <script src="/vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>
+    <!--[if IE]><!-->
+    <script src="/vendors/@coreui/icons/js/svgxuse.min.js"></script>
+    <!--<![endif]-->
+
+
+  </body>
+</html>

@@ -9,8 +9,10 @@
 const getid = () => (Math.random() * (new Date().getTime())).toString(36).replace(/[^a-z]+/g, '');
 const fs = require('fs');
 const express = require('express');
-//const app = express();
+//const expressApp = express();
 const bodyParser = require('body-parser');
+
+const EventEmitter = require('events');
 
 
 /*
@@ -21,7 +23,7 @@ const bodyParser = require('body-parser');
     await db.init();
 
     console.log('Initialize router');
-    let router = new Router(app, db, config);
+    let router = new Router(expressApp, db, config);
     await router.init();
 
     try {
@@ -33,12 +35,12 @@ const bodyParser = require('body-parser');
     }
 
 
-    app.use(async (req, res, next) => {
+    expressApp.use(async (req, res, next) => {
         res.status(404);
         res.render('404');
     });
 
-    app.use(async (err, req, res, next) => {
+    expressApp.use(async (err, req, res, next) => {
         res.status(err.status || 500);
         res.render('500', {
             message: err.message,
@@ -46,7 +48,7 @@ const bodyParser = require('body-parser');
         });
     });
 
-    app.listen(BINDING_PORT, function () {
+    expressApp.listen(BINDING_PORT, function () {
         console.log(`HomeOffice control panel at ${BINDING_PORT}`);
     });
 
@@ -64,8 +66,9 @@ process.on('uncaughtException', error => {
 */
 
 module.exports = {
-    App: class Favorito {
+    FavoritoApp: class Favorito extends EventEmitter {
         constructor(config, appName = '') {
+            super();
             this.logger = require('./modules/Logger')(appName);
 
             //If config is path to config file
@@ -106,7 +109,10 @@ module.exports = {
             this.expressApp.set('view options', {layout: false});
 
             this.expressApp.use(express.static('public'));
-            this.expressApp.set('views', 'views');
+            this.expressApp.set('views', process.cwd() + '/views');
+            this.expressApp.set('twig options', {
+                namespaces: {'core': __dirname + '/views'}
+            });
 
             this.logger.info('Initialize Router');
             const Router = require('./modules/Router');
@@ -132,20 +138,45 @@ module.exports = {
         }
 
         /**
-         * Start app
+         * Start expressApp
          * @async
          * @return {Promise<unknown>}
          */
         start() {
             let that = this;
+
+            process.on('unhandledRejection', error => {
+                that.logger.error(error);
+                that.emit('error', error);
+            });
+
+            process.on('uncaughtException', error => {
+                that.logger.error(error);
+                that.emit('error', error);
+            });
+
             return new Promise((resolve, reject) => {
-                app.listen(that.config.BIND_PORT, function () {
-                    console.log(`App started at ${that.config.BIND_PORT}`);
+                that.expressApp.use(async (req, res, next) => {
+                    res.status(404);
+                    res.render('404');
+                });
+
+                that.expressApp.use(async (err, req, res, next) => {
+                    res.status(err.status || 500);
+                    res.render('500', {
+                        message: err.message,
+                        error: {}
+                    });
+                });
+                that.expressApp.listen(that.config.bindPort, function () {
+                    that.logger.info(`App started at ${that.config.bindPort}`);
                 });
             });
+
+
         }
     },
-    Controller: require('./controllers/_Controller'),
-    SqliteModel: require('./modules/database/models/_sqliteModel'),
+    _Controller: require('./controllers/_Controller'),
+    _SqliteModel: require('./modules/database/models/_sqliteModel'),
 
 }

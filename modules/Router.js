@@ -7,8 +7,8 @@
 const fs = require('fs');
 
 class Router {
-    constructor(app, favoritoApp, config = {}) {
-        this.expressApp = app;
+    constructor(expressApp, favoritoApp, config = {}) {
+        this.expressApp = expressApp;
         this.app = favoritoApp;
         this.config = config;
 
@@ -16,15 +16,15 @@ class Router {
         this._controllersMap = {};
 
         //Initialize models
-        let controllers = fs.readdirSync(__dirname + '/../controllers');
+        let controllers = fs.readdirSync(process.cwd() + '/controllers');
         for (let controller of controllers) {
             if(controller.substr(0, 1) !== '.' && controller.substr(0, 1) !== '_') {
-                let controllerClass = require(__dirname + '/../controllers/' + controller);
+                let controllerClass = require(process.cwd() + '/controllers/' + controller);
                 let className = controller.toLowerCase().replace('.js', '');
                 /**
                  * @type {_Controller}
                  */
-                let loadedController = new (controllerClass)(app, favoritoApp, this.config, this, className);
+                let loadedController = new (controllerClass)(expressApp, favoritoApp, this.config, this, className);
                 this._controllersMap[className] = loadedController;
                 this._controllers.push(loadedController);
             }
@@ -90,6 +90,15 @@ class Router {
         this.expressApp.all('/:controllerName/:action', connectAction);
         this.expressApp.all('/:controllerName', connectAction);
         this.expressApp.all('/:controllerName/:action/(*)', connectAction);
+
+        //Setup index controller
+        if(this.config.indexController) {
+            this.expressApp.all('/', async (req, res, next) => {
+                req.params.controllerName = this.config.indexController;
+                req.params.action = 'index';
+                return await connectAction(req, res, next);
+            });
+        }
     }
 
 }

@@ -11,7 +11,7 @@ module.exports = {
                 "user": "SMTP-USER",
                 "pass": "SMTP-PASSWORD"
             },
-            "from": "Favorito Framework <info@app.biz>",
+            "from": "Favorito Framework <info@expressApp.biz>",
             "debug": true
         }
     },

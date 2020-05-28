@@ -10,8 +10,8 @@ const SESSION_TIMEOUT = 900000; //15 minutes
 const {decrypt, encrypt, md5} = require('./Crypto');
 
 class Session {
-    constructor(req, res, db, config = {}) {
-        this.db = db;
+    constructor(req, res, favoritoApp, config = {}) {
+        this.favoritoApp = favoritoApp;
         this.config = config;
 
         //Express vars

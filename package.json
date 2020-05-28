@@ -1,10 +1,14 @@
 {
   "name": "favorito",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Lightweight CakePHP-styled Node.js web framework",
   "main": "index.js",
   "author": "Andrey Nedobylsky",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SVOIcom/favorito.git"
+  },
   "dependencies": {
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",

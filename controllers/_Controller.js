@@ -12,23 +12,20 @@ const Session = require('../modules/helpers/Session');
 class _Controller {
     /**
      * Construct controller
-     * @param {express} app
-     * @param {Database} db
+     * @param {express} express
+     * @param {FavoritoApp} favoritoApp
      * @param {object} config
      * @param {Router} parent
      * @param {string} controllerName
      */
-    constructor(app, db, config = {}, parent, controllerName = '') {
+    constructor(express, favoritoApp, config = {}, parent, controllerName = '') {
 
         /**
          * @type {express}
          */
-        this.app = app;
+        this.expressApp = express;
 
-        /**
-         * @type {Database}
-         */
-        this.db = db;
+        this.app = favoritoApp;
         this.config = config;
 
         /**
@@ -93,11 +90,11 @@ class _Controller {
         /**
          * @type {Session}
          */
-        let session = await (new Session(req, res, this.db, this.config)).load();
+        let session = await (new Session(req, res, this.app, this.config)).load();
         await session.updateSession();
 
         //Setup new controller for isolation
-        let actionEnv = new this.constructor(this.app, this.db, this.config, this.parent, this.controllerName);
+        let actionEnv = new this.constructor(this.expressApp, this.app, this.config, this.parent, this.controllerName);
         await actionEnv.init();
 
         //Setup props
