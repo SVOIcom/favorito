@@ -9,61 +9,10 @@
 const getid = () => (Math.random() * (new Date().getTime())).toString(36).replace(/[^a-z]+/g, '');
 const fs = require('fs');
 const express = require('express');
-//const expressApp = express();
-const bodyParser = require('body-parser');
 
+const bodyParser = require('body-parser');
 const EventEmitter = require('events');
 
-
-/*
-
-(async () => {
-
-    console.log('Initialize database');
-    await db.init();
-
-    console.log('Initialize router');
-    let router = new Router(expressApp, db, config);
-    await router.init();
-
-    try {
-        let userId = await db.users.createNewUser('admin@twister-vl.ru', '', {name: 'Андрей Недобыльский'});
-        await db.users.changeUserType(userId, db.users.USER_TYPES.admin);
-        await db.users.changeStatus(userId, db.users.USER_STATUSES.active);
-    } catch (e) {
-
-    }
-
-
-    expressApp.use(async (req, res, next) => {
-        res.status(404);
-        res.render('404');
-    });
-
-    expressApp.use(async (err, req, res, next) => {
-        res.status(err.status || 500);
-        res.render('500', {
-            message: err.message,
-            error: {}
-        });
-    });
-
-    expressApp.listen(BINDING_PORT, function () {
-        console.log(`HomeOffice control panel at ${BINDING_PORT}`);
-    });
-
-
-})();*/
-
-/*
-process.on('unhandledRejection', error => {
-    console.log('HI LEVEL ERROR', error);
-});
-
-process.on('uncaughtException', error => {
-    console.log('HI LEVEL ERROR2', error);
-});
-*/
 
 module.exports = {
     FavoritoApp: class Favorito extends EventEmitter {
@@ -89,7 +38,19 @@ module.exports = {
             this.config = config;
             this.expressApp = null;
 
-            this.db = {};
+            /**
+             * Database holder. Returns default DB as get
+             * @type {DBHolder}
+             */
+            this.db = new (class DBHolder {
+                get(){
+                    if(typeof this['default'] !== "undefined"){
+                        return this['default'];
+                    }
+
+                    return null;
+                }
+            });
         }
 
         async init() {
@@ -178,5 +139,10 @@ module.exports = {
     },
     _Controller: require('./controllers/_Controller'),
     _SqliteModel: require('./modules/database/models/_sqliteModel'),
+    Utils: require('./modules/helpers/Utils'),
+    Crypto: require('./modules/helpers/Crypto'),
+    Session: require('./modules/helpers/Session'),
+    Email: require('./modules/Email'),
+    _Logger: require('./modules/Logger'),
 
 }

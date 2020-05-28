@@ -1,7 +1,7 @@
 {
   "name": "favorito",
   "version": "0.1.0",
-  "description": "Lightweight CakePHP-styled Node.js web framework",
+  "description": "Lightweight Node.js web framework",
   "main": "index.js",
   "author": "Andrey Nedobylsky",
   "license": "Apache-2.0",

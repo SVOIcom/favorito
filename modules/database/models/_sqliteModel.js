@@ -26,6 +26,15 @@ class _sqliteModel {
     }
 
     /**
+     * Model type
+     * @return {string}
+     * @constructor
+     */
+    get TYPE(){
+        return 'sqlite3';
+    }
+
+    /**
      * Model constructor
      * @param {sqlite3} permamentDb Permament database
      * @param {object} config Configure obj

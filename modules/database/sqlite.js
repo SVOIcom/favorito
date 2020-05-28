@@ -19,16 +19,19 @@ class Sqlite {
         this._models = [];
 
         //Initialize models
-        let models = fs.readdirSync(__dirname + '/models');
+        let models = fs.readdirSync(process.cwd() + '/models');
         for (let model of models) {
-            if(model.substr(0, 1) !== '.' && model.substr(0, 1) !== '_') {
-                let modelClass = require(__dirname + '/models/' + model);
+            if(model.substr(0, 1) !== '.' && model.substr(0, 1) !== '_' ) {
+                let modelClass = require(process.cwd() + '/models/' + model);
                 /**
-                 * @type {_Model}
+                 * @type {_sqliteModel}
                  */
                 let loadedModel = new (modelClass)(this.permamentDB,  this.config, this);
-                this[loadedModel.CLASS_NAME] = loadedModel;
-                this._models.push(loadedModel);
+                //Check is SQLITE3 model
+                if(loadedModel.TYPE === 'sqlite3') {
+                    this[loadedModel.CLASS_NAME] = loadedModel;
+                    this._models.push(loadedModel);
+                }
             }
         }
 
