@@ -131,6 +131,7 @@ module.exports = {
                 });
                 that.expressApp.listen(that.config.bindPort, function () {
                     that.logger.info(`App started at ${that.config.bindPort}`);
+                    resolve();
                 });
             });
 
