@@ -4,8 +4,6 @@
  */
 
 const {_SequelizeModel} = require('../../');
-const {DataTypes} = require('sequelize');
-
 
 class KeyValueSequelize extends _SequelizeModel {
 
@@ -31,8 +29,8 @@ class KeyValueSequelize extends _SequelizeModel {
      */
     async init() {
         await this.initModel({
-            key: DataTypes.STRING,
-            value: DataTypes.JSON
+            key: this._DataTypes.STRING,
+            value: this._DataTypes.JSON
         });
     }
 
@@ -59,7 +57,7 @@ class KeyValueSequelize extends _SequelizeModel {
      */
     async put(key, value) {
         let element = await this.findOne({where: {key}});
-        if(element){
+        if(element) {
             await this.delete(element.id);
         }
         return await this.model.create({key, value});
