@@ -4,13 +4,11 @@
  * @author Andrey Nedobylsky (admin@twister-vl.ru)
  */
 
-const { Sequelize, Model, DataTypes } = require('sequelize');
+const {Sequelize} = require('sequelize');
 const fs = require('fs');
 
 class SequelizeDB {
     constructor(dbPath = 'sqlite::memory:', config = {}) {
-
-        console.log('Sequlize start', dbPath)
 
         this.config = config;
 
@@ -22,12 +20,12 @@ class SequelizeDB {
         //Initialize models
         let models = fs.readdirSync(process.cwd() + '/models');
         for (let model of models) {
-            if(model.substr(0, 1) !== '.' && model.substr(0, 1) !== '_' ) {
+            if(model.substr(0, 1) !== '.' && model.substr(0, 1) !== '_') {
                 let modelClass = require(process.cwd() + '/models/' + model);
                 /**
                  * @type {_sequelizeModel}
                  */
-                let loadedModel = new (modelClass)(this.db,  this.config, this);
+                let loadedModel = new (modelClass)(this.db, this.config, this);
                 //Check is sequelize model
                 if(loadedModel.TYPE === 'sequelize') {
                     this[loadedModel.CLASS_NAME] = loadedModel;
