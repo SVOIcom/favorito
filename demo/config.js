@@ -2,7 +2,7 @@ module.exports = {
     bindPort: 3001,
     indexController: 'App',
     databases: [
-        {type: 'sqlite', name: 'default', config: {path: 'database.db'}}
+        {type: 'sequelize', name: 'default', config: {path: 'sqlite:database.db'}}
     ],
     "emailTransports": {
         "default": {

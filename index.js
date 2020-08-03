@@ -89,6 +89,10 @@ module.exports = {
                             this.db[dbConf.name] = new (require('./modules/database/sqlite'))(dbConf.config.path, this.config);
                             await this.db[dbConf.name].init();
                             break;
+                        case "sequelize":
+                            this.db[dbConf.name] = new (require('./modules/database/sequelize'))(dbConf.config.path, this.config);
+                            await this.db[dbConf.name].init();
+                            break;
                     }
                 }
             }
@@ -140,6 +144,7 @@ module.exports = {
     },
     _Controller: require('./controllers/_Controller'),
     _SqliteModel: require('./modules/database/models/_sqliteModel'),
+    _SequelizeModel: require('./modules/database/models/_sequelizeModel'),
     Utils: require('./modules/helpers/Utils'),
     Crypto: require('./modules/helpers/Crypto'),
     Session: require('./modules/helpers/Session'),
