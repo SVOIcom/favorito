@@ -37,12 +37,24 @@ class _sequelizeModel {
     }
 
     /**
-     * sequelize Data types alias
-     * @returns {{MediumIntegerDataTypeConstructor: MediumIntegerDataTypeConstructor, VirtualDataType: VirtualDataType, EnumDataTypeConstructor: EnumDataTypeConstructor, BlobSize: BlobSize, BlobDataTypeConstructor: BlobDataTypeConstructor, GeometryDataTypeOptions: GeometryDataTypeOptions, DecimalDataTypeOptions: DecimalDataTypeOptions, MACADDR: AbstractDataTypeConstructor, DataType: DataType, RangeDataTypeConstructor: RangeDataTypeConstructor, GEOGRAPHY: GeographyDataTypeConstructor, TIME: AbstractDataTypeConstructor, NumberDataType: NumberDataType, NumberDataTypeOptions: NumberDataTypeOptions, ArrayDataType: ArrayDataType, UUIDV4: AbstractDataTypeConstructor, CharDataTypeOptions: CharDataTypeOptions, RangeDataType: RangeDataType, DATE: DateDataTypeConstructor, ArrayDataTypeConstructor: ArrayDataTypeConstructor, DOUBLE: DoubleDataTypeConstructor, SmallIntegerDataType: SmallIntegerDataType, UUIDV1: AbstractDataTypeConstructor, FloatDataTypeOptions: FloatDataTypeOptions, RANGE: RangeDataTypeConstructor, HSTORE: AbstractDataTypeConstructor, TinyIntegerDataType: TinyIntegerDataType, BLOB: BlobDataTypeConstructor, CharDataTypeConstructor: CharDataTypeConstructor, RealDataTypeOptions: RealDataTypeOptions, DoubleDataType: DoubleDataType, VirtualDataTypeConstructor: VirtualDataTypeConstructor, DateDataTypeConstructor: DateDataTypeConstructor, TextLength: TextLength, UUID: AbstractDataTypeConstructor, StringDataTypeOptions: StringDataTypeOptions, JSON: AbstractDataTypeConstructor, EnumDataType: EnumDataType, DateOnlyDataType: DateOnlyDataType, GEOMETRY: GeometryDataTypeConstructor, DecimalDataType: DecimalDataType, DECIMAL: DecimalDataTypeConstructor, NumberDataTypeConstructor: NumberDataTypeConstructor, REAL: RealDataTypeConstructor, BlobDataTypeOptions: BlobDataTypeOptions, GeographyDataTypeOptions: GeographyDataTypeOptions, ABSTRACT: AbstractDataTypeConstructor, RealDataTypeConstructor: RealDataTypeConstructor, CharDataType: CharDataType, FloatDataType: FloatDataType, DateDataTypeOptions: DateDataTypeOptions, GeometryDataType: GeometryDataType, TinyIntegerDataTypeConstructor: TinyIntegerDataTypeConstructor, CHAR: CharDataTypeConstructor, StringDataTypeConstructor: StringDataTypeConstructor, CITEXT: AbstractDataTypeConstructor, ENUM: EnumDataTypeConstructor, NOW: AbstractDataTypeConstructor, DateDataType: DateDataType, IntegerDataTypeConstructor: IntegerDataTypeConstructor, TextDataTypeOptions: TextDataTypeOptions, StringDataType: StringDataType, INTEGER: IntegerDataTypeConstructor, GeometryDataTypeConstructor: GeometryDataTypeConstructor, RealDataType: RealDataType, MEDIUMINT: MediumIntegerDataTypeConstructor, AbstractDataTypeConstructor: AbstractDataTypeConstructor, RangeDataTypeOptions: RangeDataTypeOptions, NUMBER: NumberDataTypeConstructor, DateOnlyDataTypeConstructor: DateOnlyDataTypeConstructor, DATEONLY: DateOnlyDataTypeConstructor, DataTypeAbstract: DataTypeAbstract, AbstractDataType: AbstractDataType, BigIntDataType: BigIntDataType, DoubleDataTypeOptions: DoubleDataTypeOptions, INET: AbstractDataTypeConstructor, TextDataTypeConstructor: TextDataTypeConstructor, SMALLINT: SmallIntegerDataTypeConstructor, BOOLEAN: AbstractDataTypeConstructor, BIGINT: BigIntDataTypeConstructor, FloatDataTypeConstructor: FloatDataTypeConstructor, ArrayDataTypeOptions: ArrayDataTypeOptions, BigIntDataTypeConstructor: BigIntDataTypeConstructor, CIDR: AbstractDataTypeConstructor, TextDataType: TextDataType, MediumIntegerDataType: MediumIntegerDataType, JSONB: AbstractDataTypeConstructor, IntegerDataType: IntegerDataType, ARRAY: ArrayDataTypeConstructor, DoubleDataTypeConstructor: DoubleDataTypeConstructor, VIRTUAL: VirtualDataTypeConstructor, SmallIntegerDataTypeConstructor: SmallIntegerDataTypeConstructor, STRING: StringDataTypeConstructor, GeographyDataType: GeographyDataType, IntegerDataTypeOptions: IntegerDataTypeOptions, BlobDataType: BlobDataType, GeographyDataTypeConstructor: GeographyDataTypeConstructor, RangeableDataType: RangeableDataType, EnumDataTypeOptions: EnumDataTypeOptions, FLOAT: FloatDataTypeConstructor, DecimalDataTypeConstructor: DecimalDataTypeConstructor, TEXT: TextDataTypeConstructor, TINYINT: TinyIntegerDataTypeConstructor} | Sequelize | Model | Transaction | BelongsTo}
+     * Sequelize Data types + additional data types
      * @public
      */
-    get _DataTypes(){
-        return DataTypes;
+    get _DataTypes() {
+        let additionalDataTypes = {
+            /**
+             * Favorito JSON (support for all pseudo-json storage)
+             */
+            FJSON: {
+                type: DataTypes.STRING, get: function () {
+                    return JSON.parse(this.getDataValue('value'));
+                },
+                set: function (value) {
+                    this.setDataValue('value', JSON.stringify(value));
+                },
+            }
+        };
+        return {...DataTypes, ...additionalDataTypes};
     }
 
     /**
@@ -115,7 +127,7 @@ class _sequelizeModel {
      * @param options
      * @returns {Promise<Array|Object>}
      */
-    async find(options = {}){
+    async find(options = {}) {
         return await this.all(options);
     }
 
@@ -124,7 +136,7 @@ class _sequelizeModel {
      * @param options
      * @returns {Promise<Sequelize>}
      */
-    async findOne(options = {}){
+    async findOne(options = {}) {
         return await this.model.findOne(options);
     }
 
