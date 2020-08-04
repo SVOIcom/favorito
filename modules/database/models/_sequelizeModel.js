@@ -45,13 +45,16 @@ class _sequelizeModel {
             /**
              * Favorito JSON (support for all pseudo-json storage)
              */
-            FJSON: {
-                type: DataTypes.STRING, get: function () {
-                    return JSON.parse(this.getDataValue('value'));
-                },
-                set: function (value) {
-                    this.setDataValue('value', JSON.stringify(value));
-                },
+            FJSON: function (name) {
+                return {
+                    type: DataTypes.STRING,
+                    get: function () {
+                        return JSON.parse(this.getDataValue(name));
+                    },
+                    set: function (value) {
+                        this.setDataValue(name, JSON.stringify(value));
+                    },
+                }
             }
         };
         return {...DataTypes, ...additionalDataTypes};
@@ -68,7 +71,11 @@ class _sequelizeModel {
         this.sequelize = sequelize;
         this.config = config;
         this.parent = parent;
-        this.model = Model;
+
+        class CurrentModel extends Model {
+        }
+
+        this.model = CurrentModel;
     }
 
     /**
