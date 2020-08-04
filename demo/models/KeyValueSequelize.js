@@ -30,7 +30,7 @@ class KeyValueSequelize extends _SequelizeModel {
     async init() {
         await this.initModel({
             key: this._DataTypes.STRING,
-            value: this._DataTypes.FJSON
+            value: this._DataTypes.FJSON('value')
         });
     }
 

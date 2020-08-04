@@ -43,13 +43,14 @@ module.exports = {
              * @type {DBHolder}
              */
             this.db = new (class DBHolder {
-                get(){
-                    if(typeof this['default'] !== "undefined"){
+                get() {
+                    if(typeof this['default'] !== "undefined") {
                         return this['default'];
                     }
 
                     return null;
                 }
+
             });
         }
 
@@ -86,11 +87,17 @@ module.exports = {
                 for (let dbConf of this.config.databases) {
                     switch (dbConf.type) {
                         case "sqlite":
-                            this.db[dbConf.name] = new (require('./modules/database/sqlite'))(dbConf.config.path, this.config);
+                            this.db[dbConf.name] = new (require('./modules/database/sqlite'))(dbConf.config.path, {
+                                ...this.config,
+                                app: this
+                            });
                             await this.db[dbConf.name].init();
                             break;
                         case "sequelize":
-                            this.db[dbConf.name] = new (require('./modules/database/sequelize'))(dbConf.config.path, this.config);
+                            this.db[dbConf.name] = new (require('./modules/database/sequelize'))(dbConf.config.path, {
+                                ...this.config,
+                                app: this
+                            });
                             await this.db[dbConf.name].init();
                             break;
                     }
