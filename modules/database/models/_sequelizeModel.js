@@ -45,7 +45,7 @@ class _sequelizeModel {
             /**
              * Favorito JSON (support for all pseudo-json storage)
              */
-            FJSON: function (name) {
+            FJSON: function (name, type = DataTypes.STRING) {
                 return {
                     type: DataTypes.STRING,
                     get: function () {
@@ -188,6 +188,46 @@ class _sequelizeModel {
         return await this.sequelize.query(sql, options);
     }
 
+    /**
+     * Raw query with params
+     * @param {string} sql
+     * @param {array} binds
+     * @returns {Promise<(undefined|number)[]>}
+     */
+    async bindQuery(sql, binds = []) {
+        return await this.query(sql, {bind: binds});
+    }
+
+    /**
+     * Alias bindQuery()[0]
+     * @param  {string} sql
+     * @param {array} binds
+     * @returns {Promise<undefined|number>}
+     */
+    async bindQueryFirst(sql, binds = []) {
+        return (await this.bindQuery(sql, binds))[0];
+    }
+
+    /**
+     * JSON2Object auto
+     * @param {array} data
+     * @param {array} fieldsNames
+     * @returns {*}
+     */
+    jsonFields(data, fieldsNames = []) {
+        for (let i in data) {
+            if(data.hasOwnProperty(i)) {
+                for (let field of fieldsNames) {
+                    try {
+                        data[i][field] = JSON.parse(data[i][field]);
+                    } catch (e) {
+                    }
+                }
+            }
+        }
+
+        return data;
+    }
 
 }
 
