@@ -47,7 +47,7 @@ class _sequelizeModel {
              */
             FJSON: function (name, type = DataTypes.STRING) {
                 return {
-                    type: DataTypes.STRING,
+                    type: type,
                     get: function () {
                         return JSON.parse(this.getDataValue(name));
                     },
