@@ -33,10 +33,11 @@ module.exports = {
      * Encrypts data
      * @param {string} data
      * @param {string} password
+     * @param {Buffer} IVv
      * @return {string}
      */
-    encrypt: (data, password) => {
-        let cipher = crypto.createCipheriv(CIPER, password, IV);
+    encrypt: (data, password, IVv = IV) => {
+        let cipher = crypto.createCipheriv(CIPER, password, IVv);
         let crypted = cipher.update(data, 'utf8', 'hex');
         crypted += cipher.final('hex');
         return crypted;
@@ -46,10 +47,11 @@ module.exports = {
      * Decrypts data
      * @param {string} data
      * @param {string} password
+     * @param {Buffer} IVv
      * @return {*}
      */
-    decrypt: (data, password) => {
-        let decipher = crypto.createDecipheriv(CIPER, password, IV);
+    decrypt: (data, password, IVv = IV) => {
+        let decipher = crypto.createDecipheriv(CIPER, password, IVv);
         let dec = decipher.update(data, 'hex', 'utf8');
         dec += decipher.final('utf8');
         return dec;

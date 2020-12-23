@@ -21,6 +21,8 @@ class Session {
         this.sessionData = {};
 
         this.sessionData._sessionUpdated = false;
+
+        this.IV = Buffer.from(this.CIPER_SECRET, 'hex');
     }
 
     /**
@@ -67,7 +69,7 @@ class Session {
      */
     async load() {
         try {
-            this.sessionData = JSON.parse(decrypt(this.express.req.cookies[this.SESSION_COOKIE_NAME], md5(this.CIPER_SECRET)));
+            this.sessionData = JSON.parse(decrypt(this.express.req.cookies[this.SESSION_COOKIE_NAME], md5(this.CIPER_SECRET), this.IV));
         } catch (e) {
         }
         return this;
@@ -130,7 +132,7 @@ class Session {
     async updateSession() {
         this.sessionData._sessionUpdated = +new Date();
         try {
-            this.express.res.cookie(this.SESSION_COOKIE_NAME, encrypt(JSON.stringify(this.sessionData), md5(this.CIPER_SECRET)));
+            this.express.res.cookie(this.SESSION_COOKIE_NAME, encrypt(JSON.stringify(this.sessionData), md5(this.CIPER_SECRET), this.IV));
         } catch (e) {
         }
     }
@@ -142,7 +144,7 @@ class Session {
     async clear() {
         this.sessionData = {};
         try {
-            this.express.res.cookie(this.SESSION_COOKIE_NAME, encrypt(JSON.stringify(this.sessionData), md5(this.CIPER_SECRET)));
+            this.express.res.cookie(this.SESSION_COOKIE_NAME, encrypt(JSON.stringify(this.sessionData), md5(this.CIPER_SECRET), this.IV));
         } catch (e) {
         }
     }
