@@ -15,6 +15,14 @@ class App extends _App {
         return await this.render();
     }
 
+    async hello(){
+        return "Hello world!";
+    }
+
+    async bad(){
+        throw new Error('Bad request');
+    }
+
 
 }
 

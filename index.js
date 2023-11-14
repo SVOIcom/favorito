@@ -21,13 +21,13 @@ module.exports = {
             this.logger = require('./modules/Logger')(appName);
 
             //If config is path to config file
-            if(typeof config === 'string' && config.length !== 0) {
+            if (typeof config === 'string' && config.length !== 0) {
                 try {
                     config = require(config);
                 } catch (e) {
                     this.logger.fatalFall(`Config ${config} load failed`);
                 }
-            } else if((typeof config === 'string' && config.length === 0) || config === false) {
+            } else if ((typeof config === 'string' && config.length === 0) || config === false) {
                 try {
                     config = require(process.cwd() + '/config.js');
                 } catch (e) {
@@ -44,7 +44,7 @@ module.exports = {
              */
             this.db = new (class DBHolder {
                 get() {
-                    if(typeof this['default'] !== "undefined") {
+                    if (typeof this['default'] !== "undefined") {
                         return this['default'];
                     }
 
@@ -70,7 +70,12 @@ module.exports = {
 
             this.expressApp.set('view options', {layout: false});
 
-            this.expressApp.use(express.static('public'));
+            if (this.config.publicPath) {
+                this.expressApp.use(express.static(this.config.publicPath));
+            } else {
+                this.expressApp.use(express.static('public'));
+            }
+
             this.expressApp.set('views', process.cwd() + '/views');
             this.expressApp.set('twig options', {
                 namespaces: {'core': __dirname + '/views'}
@@ -82,7 +87,7 @@ module.exports = {
             await router.init();
 
 
-            if(this.config.databases) {
+            if (this.config.databases) {
                 this.logger.info('Initialize databases');
                 for (let dbConf of this.config.databases) {
                     switch (dbConf.type) {
@@ -129,17 +134,34 @@ module.exports = {
 
             return new Promise((resolve, reject) => {
                 that.expressApp.use(async (req, res, next) => {
+
+                    //If it already 500 send to 500 handler
+                    if (res.statusCode === 500) {
+                        return handler500(null, req, res, next);
+                    }
+
+                    //If code ok or 404
+                    if (res.statusCode !== 404 && res.statusCode !== 200) {
+                        return next();
+                    }
                     res.status(404);
                     res.render('404');
                 });
 
-                that.expressApp.use(async (err, req, res, next) => {
+                const handler500 = async (err, req, res, next) => {
+                    console.log('500');
+                    err = err || {};
+                    if (!err.status) {
+                        err.status = 500;
+                    }
                     res.status(err.status || 500);
                     res.render('500', {
                         message: err.message,
                         error: {}
                     });
-                });
+                };
+
+                that.expressApp.use(handler500);
                 that.expressApp.listen(that.config.bindPort, function () {
                     that.logger.info(`App started at ${that.config.bindPort}`);
                     resolve();

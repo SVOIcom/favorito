@@ -1,7 +1,7 @@
 {
   "name": "favorito",
-  "version": "0.1.9",
-  "description": "Lightweight Node.js web framework",
+  "version": "0.1.10",
+  "description": "Lightweight Node.js backend framework",
   "main": "index.js",
   "author": "Andrey Nedobylsky",
   "license": "Apache-2.0",

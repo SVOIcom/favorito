@@ -1,8 +1,19 @@
 module.exports = {
     bindPort: 3001,
     indexController: 'App',
+    publicPath: 'public',
     databases: [
         {type: 'sequelize', name: 'default', config: {path: 'sqlite:database.db'}}
+    ],
+    routes: [
+        {path: '/hello', controller: 'App', action: 'hello'},
+        {path: '/redirectToGoogle', redirect: 'https://google.com'},
+        {path: '/someFile', file: 'moreStatic/test.json', filename: 'test!!!.json'},
+        {
+            path: '/fn', fn: async (req, res, next) => {
+                res.send('Hello from function');
+            }
+        },
     ],
     "emailTransports": {
         "default": {
