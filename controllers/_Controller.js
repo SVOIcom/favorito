@@ -38,6 +38,9 @@ class _Controller {
         this.req = null;
         this.res = null;
 
+        //Tools
+        this.logger = this.app.logger;
+
         /**
          * Session
          * @type {Session}
@@ -107,6 +110,8 @@ class _Controller {
         actionEnv.action = actionMethod;
 
         // this.templateParams = {};
+
+
 
         //Run actions in isolated class
         try {
